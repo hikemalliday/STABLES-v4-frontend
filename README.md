@@ -1,5 +1,5 @@
 # STABLES-V4-FRONTEND
-#### An inventory parser and spellbook parser for Everquest (a MMORPG)
+#### An inventory parser and spellbook parser for Everquest (an MMORPG)
 
 Created with VueJS, FastAPI, PyJWT, and MSSQL.
 
