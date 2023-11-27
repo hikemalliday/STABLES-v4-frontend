@@ -1,7 +1,8 @@
-# Vue 3 + Vite
+# STABLES-V4-FRONTEND
+#### An inventory parser and spellbook parser for Everquest (a MMORPG)
 
-This template should help get you started developing with Vue 3 in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
+Created with VueJS, FastAPI, PyJWT, and MSSQL.
 
-## Recommended IDE Setup
-
-- [VS Code](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur) + [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin).
+Despite the new date on the repo, this is an older app I created. I figured I would throw it onto my github to have a larger project count displayed. It is my first project to have a login system with JWT's. 
+It is V4, because over time I made many versions of this app, with the very first being a vanilla JS version.
+The app is desecrated, in the sense that my [STABLESPythonGUI](https://github.com/hikemalliday/STABLESPythonGUI) does everything thing app does and a lot more.
