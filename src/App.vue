@@ -11,23 +11,23 @@ export default {
   },
   data() {
     return {
-      tokenInterval: null,
-      showTable: true,
-      createUsernameAndPasswordModal: false,
-      username: "",
-      password: "",
-      search: "",
-      filteredData: "",
-      charNames: [],
-      db: "",
-      inventoryDb: "",
-      eqDir: "",
       charInventory: "",
+      charNames: [],
+      createUsernameAndPasswordModal: false,
+      db: "",
+      eqDir: "",
       filteredCharInventory: "",
       filteredCharSpellbook: "",
+      filteredData: "",
+      filteredMissingSpells: "",
+      inventoryDb: "",
       itemSearchResults: "",
       missingSpells: "",
-      filteredMissingSpells: "",
+      password: "",
+      search: "",
+      showTable: true,
+      tokenInterval: null,
+      username: "",
     };
   },
   methods: {
@@ -51,7 +51,6 @@ export default {
         console.log(err);
       }
     },
-    // Deprecated
     async login() {
       let token = "";
       let body = {
@@ -116,7 +115,6 @@ export default {
           headers: { "Content-Type": "application/json" },
         });
         let returnedDb = await result.json();
-        // iterate over 'returnedDb' to populate out 'this.charNames' array, for usage for intentory parsing
         this.db = returnedDb;
         this.filteredData = this.db;
         returnedDb.forEach((char) => this.charNames.push(char.charName));
@@ -199,8 +197,7 @@ export default {
     },
     resetFilteredData() {
       this.search = "";
-      // this.filteredData = this.db;
-      // console.log(this.filteredData)
+
       this.filteredData = this.db;
     },
     classSelect(data) {
@@ -209,7 +206,7 @@ export default {
         character.charClass.toLowerCase().includes(data.toLowerCase())
       );
     },
-    // Could clean this up slightly on backend so I dont have to extract what I need from the returned obj. Just make the backend send only what I want.
+
     async getEqDir() {
       try {
         const result = await fetch("http://localhost:8000/geteqdir", {
@@ -223,8 +220,6 @@ export default {
       }
     },
     async eqDirUpdate(eqDir) {
-      // Wasnt really sure the proper protocol here, but this looks fine to me:
-
       let body = { eqDir: eqDir };
       console.log("eqDir (appSide, test)", eqDir);
       console.log("body (appSide, test)", body);
@@ -273,7 +268,7 @@ export default {
         location: data.location,
       };
       this.filteredData.push(body);
-      // ^^ possibly sort the array by charName eventually (polish phase)
+
       console.log("body", body);
 
       try {
@@ -290,14 +285,13 @@ export default {
     async editCharacter(editedChar) {
       let body = editedChar;
       let index = this.db.findIndex((char) => char.charName === char.charName);
-      // Remove the old object
+
       this.db.splice(index, 1);
-      // Replace the removed old character object
+
       this.db.splice(index, 0, body);
 
       console.log("editedChar in App.vue", editedChar);
 
-      // Send the new body to the expressAP
       try {
         const result = await fetch("http://localhost:8000/editcharacter", {
           method: "POST",
@@ -328,7 +322,6 @@ export default {
         let returnedCharInventory = await result.json();
         console.log(returnedCharInventory);
         this.charInventory = returnedCharInventory;
-        // iterate over 'returnedDb' to populate out 'this.charNames' array, for usage for intentory parsing
       } catch (err) {
         console.log(err);
       }
@@ -390,7 +383,6 @@ export default {
       }
     },
     async createSpellsDb() {
-      // Send a 'body' with all the 'charNames' (aka, this.charNames) and 'eqDir'
       let body = {
         charNames: this.charNames,
         eqDir: this.eqDir,
@@ -407,7 +399,6 @@ export default {
       }
     },
     async createInventoryDb() {
-      // Send a 'body' with all the 'charNames' (aka, this.charNames) and 'eqDir'
       let body = {
         charNames: this.charNames,
         eqDir: this.eqDir,
@@ -419,7 +410,6 @@ export default {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(body),
         });
-        // let returned = await result.json();
       } catch (err) {
         console.log(err);
       }
@@ -439,15 +429,15 @@ export default {
 <template>
   <div v-if="showTable">
     <Header
-      @itemSearch="itemSearch"
-      @classSelect="classSelect"
-      @refreshTable="resetFilteredData"
-      @addCharacter="addCharacter"
-      @eqDirUpdate="eqDirUpdate"
-      @createInventoryDb="createInventoryDb"
-      @createSpellsDb="createSpellsDb"
       :eqDir="eqDir"
       :itemSearchResults="itemSearchResults"
+      @addCharacter="addCharacter"
+      @classSelect="classSelect"
+      @createInventoryDb="createInventoryDb"
+      @createSpellsDb="createSpellsDb"
+      @eqDirUpdate="eqDirUpdate"
+      @itemSearch="itemSearch"
+      @refreshTable="resetFilteredData"
     />
     <input
       @keyup="characterSearch"
@@ -456,22 +446,22 @@ export default {
       class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:focus:border-blue-500"
     />
     <Charactertable
-      @searchCharMissingSpells="searchCharMissingSpells"
-      @getMissingSpells="getMissingSpells"
-      @searchCharSpellbook="searchCharSpellbook"
-      @createSpellsDb="createSpellsDb"
-      @copyUi="copyUi"
-      @deleteCharacter="deleteCharacter"
-      @editCharacter="editCharacter"
-      @charInventoryModalOpen="getCharInventoryAndSpellbook"
-      @rewriteCharInventory="rewriteCharInventory"
-      @searchCharInventory="searchCharInventory"
-      :filteredData="filteredData"
-      :db="db"
       :charInventory="charInventory"
+      :db="db"
       :filteredCharInventory="filteredCharInventory"
       :filteredCharSpellbook="filteredCharSpellbook"
+      :filteredData="filteredData"
       :filteredMissingSpells="filteredMissingSpells"
+      @charInventoryModalOpen="getCharInventoryAndSpellbook"
+      @copyUi="copyUi"
+      @createSpellsDb="createSpellsDb"
+      @deleteCharacter="deleteCharacter"
+      @editCharacter="editCharacter"
+      @getMissingSpells="getMissingSpells"
+      @rewriteCharInventory="rewriteCharInventory"
+      @searchCharInventory="searchCharInventory"
+      @searchCharMissingSpells="searchCharMissingSpells"
+      @searchCharSpellbook="searchCharSpellbook"
     />
   </div>
 </template>
